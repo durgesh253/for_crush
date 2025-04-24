@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Special Gallery For You</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5rem;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .heart {
+            position: fixed;
+            font-size: 20px;
+            top: -20px;
+            animation: fall linear;
+            color: #ff3366;
+        }
+        
+        @keyframes fall {
+            to {
+                transform: translateY(100vh) rotate(360deg);
+            }
+        }
+        
+        .message {
+            background-color: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            max-width: 600px;
+            text-align: center;
+            animation: fadeIn 1s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .btn {
+            display: inline-block;
+            background: linear-gradient(45deg, #ff3366, #ff6b6b);
+            color: white;
+            padding: 12px 25px;
+            border-radius: 50px;
+            text-decoration: none;
+            margin-top: 20px;
+            box-shadow: 0 4px 15px rgba(255, 51, 102, 0.4);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+            font-size: 18px;
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(255, 51, 102, 0.6);
+        }
+        
+        .final-message {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            text-align: center;
+            max-width: 80%;
+            display: none;
+            z-index: 100;
+        }
+        
+        .final-message.show {
+            display: block;
+            animation: popup 0.5s ease;
+        }
+        
+        @keyframes popup {
+            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
+            100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+        }
+        
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.7);
+            display: none;
+            z-index: 90;
+        }
+        
+        .overlay.show {
+            display: block;
+        }
+        
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 24px;
+            cursor: pointer;
+            color: #ff3366;
+        }
+
+        /* Slideshow styles */
+        .slideshow-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.9);
+            display: none;
+            z-index: 200;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+
+        .slideshow-container.active {
+            display: flex;
+        }
+
+        .slideshow-image {
+            max-width: 80%;
+            max-height: 70vh;
+            border-radius: 10px;
+            box-shadow: 0 0 30px rgba(255,255,255,0.2);
+            display: none;
+        }
+
+        .slideshow-image.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .slideshow-caption {
+            color: white;
+            font-size: 1.5rem;
+            margin-top: 20px;
+            text-align: center;
+            max-width: 80%;
+            background-color: rgba(0,0,0,0.7);
+            padding: 15px;
+            border-radius: 10px;
+        }
+
+        .slideshow-controls {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+            gap: 20px;
+        }
+
+        .slideshow-btn {
+            background: linear-gradient(45deg, #ff3366, #ff6b6b);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 16px;
+            box-shadow: 0 4px 15px rgba(255, 51, 102, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .slideshow-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(255, 51, 102, 0.6);
+        }
+
+        .close-slideshow {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            color: white;
+            font-size: 30px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .close-slideshow:hover {
+            transform: scale(1.2);
+        }
+    </style>
+</head>
+<body>
+    <h1>Special Gallery For You</h1>
+    
+    <div class="message">
+        <h2>Thank you for being my best friend!</h2>
+        <p>this is for you</p>
+        <button class="btn" id="startSlideshow">View ❤️</button>
+    </div>
+    
+    <!-- Hidden image data - not displayed -->
+    <div style="display: none;" id="image-data">
+        <div class="image-info" src="./styles/images/janvhvi1.jpg" data-caption="Radiant"></div>
+        <div class="image-info" src="./styles/WhatsApp Image 2025-04-20 at 2.13.44 AM (1).jpeg" data-caption="Enchanting"></div>
+        <div class="image-info" src="./styles/WhatsApp Image 2025-04-20 at 2.13.44 AM (2).jpeg" data-caption="Dazzling"></div>
+        <div class="image-info" src="./styles/WhatsApp Image 2025-04-20 at 2.13.44 AM.jpeg" data-caption="Captivating"></div>
+        <div class="image-info" src="./styles/WhatsApp Image 2025-04-20 at 2.13.45 AM.jpeg" data-caption="Mesmerizing"></div>
+        <div class="image-info" src="./styles/WhatsApp Image 2025-04-20 at 2.13.46 AM (1).jpeg" data-caption="Luminous"></div>
+        <div class="image-info" src="./styles/WhatsApp Image 2025-04-20 at 2.13.46 AM (2).jpeg" data-caption="Resplendent"></div>
+        <div class="image-info" src="./styles/WhatsApp Image 2025-04-20 at 2.13.46 AM.jpeg" data-caption="Exquisite"></div>
+        <div class="image-info" src="./styles/WhatsApp Image 2025-04-20 at 2.13.47 AM (1).jpeg" data-caption="Ethereal"></div>
+        <div class="image-info" src="./styles/WhatsApp Image 2025-04-20 at 2.13.47 AM (2).jpeg" data-caption="Breathtaking"></div>
+        <div class="image-info" src="./styles/WhatsApp Image 2025-04-20 at 2.13.47 AM (3).jpeg" data-caption="Bewitching"></div>
+        <div class="image-info" src="./styles/WhatsApp Image 2025-04-20 at 2.13.54 AM.jpeg" data-caption="Effervescent"></div>
+        <div class="image-info" src="./styles/WhatsApp Image 2025-04-20 at 2.13.57 AM (1).jpeg" data-caption="Alluring"></div>
+        <div class="image-info" src="./styles/WhatsApp Image 2025-04-20 at 2.13.57 AM.jpeg" data-caption="Charismatic"></div>
+        <div class="image-info" src="./styles/WhatsApp Image 2025-04-20 at 2.13.59 AM.jpeg" data-caption="Spellbinding"></div>
+        <div class="image-info" src="./styles/WhatsApp Image 2025-04-20 at 2.14.00 AM.jpeg" data-caption="Sublime"></div>
+        <div class="image-info" src="./styles/WhatsApp Image 2025-04-20 at 2.14.02 AM.jpeg" data-caption="Magnificent"></div>
+
+      
+    </div>
+    
+    <!-- Slideshow Container -->
+    <div class="slideshow-container">
+        <div class="close-slideshow">&times;</div>
+        <div class="slideshow-images">
+            <!-- Images will be added here via JavaScript -->
+        </div>
+        <div class="slideshow-caption"></div>
+        <div class="slideshow-controls">
+            <button class="slideshow-btn prev-btn">Previous</button>
+            <button class="slideshow-btn next-btn">Next</button>
+        </div>
+    </div>
+    
+    <div class="overlay"></div>
+    <div class="final-message">
+        <span class="close-btn">&times;</span>
+        <h2>Thank You For Being In My Life! ❤️</h2>
+        <p>"Every conversation with you brightens my day. I value our online friendship and the moments we share, even from a distance."</p>
+        <p>Looking forward to many more adventures with you!</p>
+        <button class="btn">Continue🌟</button>
+    </div>
+    
+    <script>
+        // Heart animation
+        setInterval(function() {
+            const heart = document.createElement('div');
+            heart.className = 'heart';
+            heart.innerHTML = '❤️';
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.animationDuration = Math.random() * 3 + 2 + 's';
+            document.body.appendChild(heart);
+            
+            // Remove hearts after animation completes
+            setTimeout(() => {
+                heart.remove();
+            }, 5000);
+        }, 300);
+
+        // Slideshow functionality
+        const slideshowContainer = document.querySelector('.slideshow-container');
+        const slideshowImagesContainer = document.querySelector('.slideshow-images');
+        const slideshowCaption = document.querySelector('.slideshow-caption');
+        const prevBtn = document.querySelector('.prev-btn');
+        const nextBtn = document.querySelector('.next-btn');
+        const closeSlideshow = document.querySelector('.close-slideshow');
+        const startSlideshowBtn = document.getElementById('startSlideshow');
+        
+        // Get image data from hidden elements
+        const images = [];
+        const captions = [];
+        
+        document.querySelectorAll('.image-info').forEach(info => {
+            const imgSrc = info.getAttribute('src');
+            const captionText = info.getAttribute('data-caption');
+            
+            images.push({ src: imgSrc });
+            captions.push(captionText);
+        });
+        
+        let currentSlideIndex = 0;
+        
+        // Initialize slideshow
+        function initSlideshow() {
+            slideshowImagesContainer.innerHTML = '';
+            
+            images.forEach((image, index) => {
+                const imgElement = document.createElement('img');
+                imgElement.src = image.src;
+                imgElement.alt = "Friendship memory";
+                imgElement.className = 'slideshow-image';
+                
+                if (index === 0) {
+                    imgElement.classList.add('active');
+                }
+                
+                slideshowImagesContainer.appendChild(imgElement);
+            });
+            
+            updateCaption();
+        }
+        
+        // Show slide by index
+        function showSlide(index) {
+            if (index < 0) {
+                currentSlideIndex = images.length - 1;
+            } else if (index >= images.length) {
+                currentSlideIndex = 0;
+            } else {
+                currentSlideIndex = index;
+            }
+            
+            document.querySelectorAll('.slideshow-image').forEach((img, idx) => {
+                if (idx === currentSlideIndex) {
+                    img.classList.add('active');
+                } else {
+                    img.classList.remove('active');
+                }
+            });
+            
+            updateCaption();
+        }
+        
+        // Update the caption for current slide
+        function updateCaption() {
+            slideshowCaption.textContent = captions[currentSlideIndex];
+        }
+        
+        // Start slideshow when button is clicked
+        startSlideshowBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // Create extra hearts on button click
+            for (let i = 0; i < 20; i++) {
+                setTimeout(() => {
+                    const heart = document.createElement('div');
+                    heart.className = 'heart';
+                    heart.innerHTML = '❤️';
+                    heart.style.left = Math.random() * 100 + 'vw';
+                    heart.style.animationDuration = Math.random() * 3 + 2 + 's';
+                    document.body.appendChild(heart);
+                    
+                    setTimeout(() => {
+                        heart.remove();
+                    }, 5000);
+                }, i * 100);
+            }
+            
+            initSlideshow();
+            currentSlideIndex = 0;
+            showSlide(currentSlideIndex);
+            slideshowContainer.classList.add('active');
+        });
+        
+        // Previous slide button
+        prevBtn.addEventListener('click', function() {
+            showSlide(currentSlideIndex - 1);
+        });
+        
+        // Next slide button
+        nextBtn.addEventListener('click', function() {
+            showSlide(currentSlideIndex + 1);
+            
+            // If we've reached the end of the slideshow
+            if (currentSlideIndex === 0) {
+                // Show the final message
+                setTimeout(() => {
+                    slideshowContainer.classList.remove('active');
+                    document.querySelector('.overlay').classList.add('show');
+                    document.querySelector('.final-message').classList.add('show');
+                }, 1000);
+            }
+        });
+        
+        // Close slideshow
+        closeSlideshow.addEventListener('click', function() {
+            slideshowContainer.classList.remove('active');
+        });
+        
+        // Close the final message
+        document.querySelector('.close-btn').addEventListener('click', function() {
+            document.querySelector('.overlay').classList.remove('show');
+            document.querySelector('.final-message').classList.remove('show');
+        });
+        
+        // Close the final message when clicking the overlay
+        document.querySelector('.overlay').addEventListener('click', function() {
+            document.querySelector('.overlay').classList.remove('show');
+            document.querySelector('.final-message').classList.remove('show');
+        });
+        
+        // Button in the final message
+        document.querySelector('.final-message .btn').addEventListener('click', function() {
+            document.querySelector('.overlay').classList.remove('show');
+            document.querySelector('.final-message').classList.remove('show');
+            
+            // Create more hearts
+            for (let i = 0; i < 50; i++) {
+                setTimeout(() => {
+                    const heart = document.createElement('div');
+                    heart.className = 'heart';
+                    heart.innerHTML = '❤️';
+                    heart.style.left = Math.random() * 100 + 'vw';
+                    heart.style.animationDuration = Math.random() * 3 + 2 + 's';
+                    document.body.appendChild(heart);
+                    
+                    setTimeout(() => {
+                        heart.remove();
+                    }, 5000);
+                }, i * 50);
+            }
+        });
+    </script>
+</body>
+</html>
